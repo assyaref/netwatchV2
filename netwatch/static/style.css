@@ -1,20 +1,23 @@
 :root {
-  --bg: #02080a;
-  --bg-glow: #04201a;
-  --panel: #050f0c;
-  --panel-2: #071612;
-  --input: #010504;
-  --line: #0f3b2d;
-  --line-hi: #1f7a5c;
-  --text: #9de8c8;
-  --text-hi: #c9fbe5;
-  --dim: #3f8f72;
-  --faint: #1f5442;
-  --accent: #f59e0b;
-  --accent-2: #fbbf24;
-  --up: #34d399;
-  --danger: #f87171;
-  --mono: "JetBrains Mono", "Cascadia Mono", "Fira Code", Consolas, "DejaVu Sans Mono", monospace;
+  --bg: #050B15;
+  --bg-glow: #091525;
+  --panel: #091525;
+  --panel-2: #0D1E32;
+  --input: #050B15;
+  --line: #183858;
+  --line-hi: #087CC1;
+  --text: #EAF4FF;
+  --text-hi: #ffffff;
+  --dim: #829DB8;
+  --faint: #183858;
+  --accent: #087CC1;
+  --accent-2: #00B8FF;
+  --up: #00D68F;
+  --gold: #F0B323;
+  --danger: #FF354F;
+  --mono: "JetBrains Mono", "Cascadia Mono", "Fira Code", Consolas, monospace;
+  --sans: "Inter", system-ui, sans-serif;
+  --head: "Rajdhani", "Inter", sans-serif;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; }
