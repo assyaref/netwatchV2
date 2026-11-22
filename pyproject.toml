@@ -14,7 +14,8 @@ dependencies = ["scapy>=2.5"]
 window = ["pywebview>=5"]
 
 [project.scripts]
-netwatch = "netwatch.server:main"
+netwatchv2 = "netwatch.server:main"
+netwatchv2-update = "netwatch.updater:main"
 
 [tool.setuptools]
 packages = ["netwatch"]
