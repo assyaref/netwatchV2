@@ -1,0 +1,9 @@
+{
+  "name": "NETWATCH V2",
+  "short_name": "NETWATCH",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050B15",
+  "theme_color": "#087CC1",
+  "icons": [{"src": "icon.png", "sizes": "192x192", "type": "image/png"}]
+}
