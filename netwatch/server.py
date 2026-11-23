@@ -22,6 +22,7 @@ from .config import DEFAULT_PASS, Config, list_interfaces, validate_subnets
 from ._version import __version__
 from .engine import Engine
 from .store import Store
+from . import labels, router
 
 STATIC = Path(__file__).parent / "static"
 SESSION_TTL = 8 * 3600
@@ -158,6 +159,8 @@ def make_handler(store: Store, auth: Auth, engine: Engine, config: Config):
                 return self._json(200, self._config_view())
             if url.path == "/api/interfaces":
                 return self._json(200, list_interfaces())
+            if url.path == "/api/labels":
+                return self._json(200, labels.all_labels())
             return self._json(404, {"error": "not found"})
 
         def do_POST(self):
@@ -227,6 +230,14 @@ def make_handler(store: Store, auth: Auth, engine: Engine, config: Config):
             if url.path == "/api/purge":
                 store.reset(clear=True)
                 return self._json(200, {"ok": True})
+            if url.path == "/api/label":
+                labels.set_label(str(b.get("ip", "")), str(b.get("name", "")))
+                return self._json(200, {"ok": True})
+            if url.path == "/api/block":
+                ip = str(b.get("ip", ""))
+                if b.get("unblock"):
+                    return self._json(200, router.unblock_ip(ip))
+                return self._json(200, router.block_ip(ip))
 
             self._json(404, {"error": "not found"})
 
