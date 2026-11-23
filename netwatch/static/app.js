@@ -163,6 +163,9 @@ function renderDetail() {
   const d = state.detail;
   $("#empty").classList.add("hidden"); $("#dossier").classList.remove("hidden");
   $("#d-ip").textContent = d.ip;
+  // action bar
+  let bar = $("#d-actions"); if (!bar) { bar = document.createElement("div"); bar.id="d-actions"; bar.style.marginTop="8px"; $("#dossier").appendChild(bar); }
+  bar.innerHTML = `<button onclick="renameTarget()">Rename</button> <button onclick="blockTarget()">Block</button> <button onclick="unblockTarget()">Unblock</button>`;
   $("#d-host").textContent = d.hostname || "hostname unresolved";
   $("#d-mac").textContent = d.mac || "—";
   $("#d-first").textContent = fmtDate(d.first_seen);
@@ -374,3 +377,7 @@ api("/api/session").then((s) => {
   if (s.default_password) $("#login-foot").innerHTML = "Default credentials: <b>admin</b> / <b>admin123</b> — change them in SETTINGS after login.";
   s.authenticated ? showApp() : showLogin(s.setup_required);
 }).catch(() => showLogin());
+
+async function renameTarget(){const n=prompt('Name for '+state.target); if(n){await api('/api/label',{method:'POST',body:JSON.stringify({ip:state.target,name:n})}); refreshDetail();}}
+async function blockTarget(){await api('/api/block',{method:'POST',body:JSON.stringify({ip:state.target})}); alert('blocked');}
+async function unblockTarget(){await api('/api/block',{method:'POST',body:JSON.stringify({ip:state.target,unblock:true})}); alert('unblocked');}
