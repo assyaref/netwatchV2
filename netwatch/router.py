@@ -1,4 +1,4 @@
-import requests, os, json
+import urllib.request, urllib.error, json, os, base64
 
 CFG = os.path.join(os.path.expanduser("~"), ".netwatch", "router.json")
 
@@ -15,9 +15,13 @@ def block_ip(ip):
     if not c:
         return {"ok": False, "error": "router not configured"}
     url = f"http://{c['host']}/rest/ip/firewall/address-list/add"
+    data = json.dumps({"list": "netwatch_blocked", "address": ip}).encode()
+    req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
+    creds = base64.b64encode(f"{c['user']}:{c['password']}".encode()).decode()
+    req.add_header("Authorization", "Basic " + creds)
     try:
-        r = requests.post(url, json={"list": "netwatch_blocked", "address": ip}, auth=(c["user"], c["password"]), timeout=10)
-        return {"ok": r.ok, "status": r.status_code}
+        with urllib.request.urlopen(req, timeout=10) as r:
+            return {"ok": True, "status": r.status}
     except Exception as e:
         return {"ok": False, "error": str(e)}
 
