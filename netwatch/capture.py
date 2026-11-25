@@ -125,9 +125,34 @@ class Capture:
     def _handle(self, pkt) -> None:
         from scapy.layers.dhcp import DHCP
         from scapy.layers.dns import DNS, DNSRR
-        from scapy.layers.inet import IP, TCP, UDP
+        from scapy.layers.inet import IP, TCP, UDP, Raw
         from scapy.layers.l2 import Ether
 
+        # TZSP decapsulation (MikroTik packet sniffer streaming)
+        if UDP in pkt and (pkt[UDP].dport == 37008 or pkt[UDP].sport == 37008):
+            raw = bytes(pkt[UDP].payload)
+            # TZSP header: version(1) type(1) proto(2) then tags until 0x01
+            i = 4
+            while i < len(raw):
+                tag = raw[i]; i += 1
+                if tag == 0x01:
+                    break
+                if tag in (0x02, 0x03):  # FCS / RSSI etc with 1-byte value
+                    i += 1
+                elif tag in (0x04,):  # 4-byte
+                    i += 4
+                else:
+                    # unknown tag: stop
+                    break
+            inner = raw[i:]
+            try:
+                ipkt = IP(inner)
+                if IP in ipkt:
+                    self._handle(ipkt)
+                    return
+            except Exception:
+                pass
+            return
         if IP not in pkt:
             return
         ip = pkt[IP]
