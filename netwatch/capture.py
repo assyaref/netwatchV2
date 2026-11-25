@@ -122,7 +122,7 @@ class Capture:
 
         self._resolver.submit(job)
 
-    def _handle(self, pkt) -> None:
+    def _handle(self, pkt, tzsp: bool = False) -> None:
         from scapy.layers.dhcp import DHCP
         from scapy.layers.dns import DNS, DNSRR
         from scapy.layers.inet import IP, TCP, UDP, Raw
@@ -148,7 +148,7 @@ class Capture:
             try:
                 ipkt = IP(inner)
                 if IP in ipkt:
-                    self._handle(ipkt)
+                    self._handle(ipkt, tzsp=True)
                     return
             except Exception:
                 pass
@@ -158,7 +158,7 @@ class Capture:
         ip = pkt[IP]
         src, dst, length = ip.src, ip.dst, int(ip.len or len(ip))
         src_local, dst_local = self.store.is_local(src), self.store.is_local(dst)
-        if not (src_local or dst_local):
+        if not tzsp and not (src_local or dst_local):
             return
 
         proto, sport, dport, payload = "IP", 0, 0, b""
